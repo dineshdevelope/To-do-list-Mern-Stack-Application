@@ -15,7 +15,7 @@ export const registerUser = async (req, res) => {
       password: hashPassword,
     });
     await newUser.save();
-    return res.status(201).json({ message: "User Created" });
+    return res.status(201).json({ message: "User Created", status: true });
   } catch (error) {
     res.status(404).json({ message: "Error in Create User" });
     console.log(error);
@@ -35,5 +35,8 @@ export const loginController = async (req, res) => {
   const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
     expiresIn: "1h",
   });
-  return res.status(200).json({ token });
+  res.cookie("jwt", token, {
+    httpOnly: true,
+  });
+  return res.status(200).json({ token, status: true });
 };
